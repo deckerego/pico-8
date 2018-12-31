@@ -32,7 +32,16 @@ function _update()
  if(btn(➡️, 0)) move_right(p1)
  if(btn(⬆️, 0)) move_up(p1)
  if(btn(⬇️, 0)) move_down(p1)
+ if(band(btn(), 0x00FF) == 0) idle(p1)
  if(btnp(❎, 0)) action(p1)
+
+ if(btn(⬅️, 1)) move_left(p2)
+ if(btn(➡️, 1)) move_right(p2)
+ if(btn(⬆️, 1)) move_up(p2)
+ if(btn(⬇️, 1)) move_down(p2)
+ if(band(btn(), 0xFF00) == 0) idle(p2)
+ if(btnp(❎, 1)) action(p2)
+
  if(disc.angle > 0) fly(disc)
 end
 
