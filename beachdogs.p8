@@ -2,26 +2,66 @@ pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
 function _init()
- x=64
- y=64
- frame=0
+ dog = {}
+ dog.x = 0
+ dog.y = 0
+ dog.spr = 0
+ dog.tick = 0
+ dog.west = false
 end
 
 function _update()
- if(btn(⬅️)) x-=1
- if(btn(➡️)) x+=1
- if(btn(⬆️)) y-=1
- if(btn(⬇️)) y+=1
+ if(btn(⬅️)) move_left(dog)
+ if(btn(➡️)) move_right(dog)
+ if(btn(⬆️)) move_up(dog)
+ if(btn(⬇️)) move_down(dog)
+ if(btnp(❎)) action(dog)
 
- if(x%4 == 0) frame = (frame + 1) % 5
-
- if(btnp(❎)) sfx(0)
+ if btn() == 0 then
+  idle(dog)
+ else
+  frameadv(dog)
+ end
 end
 
 function _draw()
  cls()
- map(0,0)
- spr(frame*2,x,y,2,2)
+ map(0, 0)
+ spr(dog.spr * 2, dog.x, dog.y, 2, 2, dog.west, false)
+end
+
+function idle(plr)
+ plr.spr = 0
+ plr.tick = 0
+end
+
+function move_up(plr)
+ plr.y -= 1
+end
+
+function move_down(plr)
+ plr.y += 1
+end
+
+function move_right(plr)
+ plr.x += 1
+ plr.aim = 0
+ plr.west = false
+end
+
+function move_left(plr)
+ plr.x -= 1
+ plr.aim = -1
+ plr.west = true
+end
+
+function frameadv(plr)
+ plr.tick += 1
+ if(plr.tick % 4 == 0) plr.spr = (plr.spr + 1) % 5
+end
+
+function action(plr)
+ sfx(0)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
