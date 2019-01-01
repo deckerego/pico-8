@@ -3,6 +3,7 @@ version 16
 __lua__
 function _init()
  p1 = {}
+ p1.num = 0
  p1.speed = 1.25
  p1.x = 24
  p1.y = 32
@@ -11,6 +12,7 @@ function _init()
  p1.west = false
 
  p2 = {}
+ p2.num = 1
  p2.speed = 1.25
  p2.x = 82
  p2.y = 32
@@ -28,21 +30,9 @@ function _init()
 end
 
 function _update()
- if(btn(⬅️, 0)) move_left(p1)
- if(btn(➡️, 0)) move_right(p1)
- if(btn(⬆️, 0)) move_up(p1)
- if(btn(⬇️, 0)) move_down(p1)
- if(band(btn(), 0x00FF) == 0) idle(p1)
- if(btnp(❎, 0)) action(p1)
-
- if(btn(⬅️, 1)) move_left(p2)
- if(btn(➡️, 1)) move_right(p2)
- if(btn(⬆️, 1)) move_up(p2)
- if(btn(⬇️, 1)) move_down(p2)
- if(band(btn(), 0xFF00) == 0) idle(p2)
- if(btnp(❎, 1)) action(p2)
-
- if(disc.angle > 0) fly(disc)
+ move(p1)
+ move(p2)
+ if(disc.angle >= 0) fly(disc)
 end
 
 function _draw()
@@ -56,15 +46,33 @@ function _draw()
  local p2idx = sprite_idx(p2, 4, 3)
  spr((p2.spr + p2idx) * 2, p2.x, p2.y, 2, 2, p2.west, false)
 
- if disc.angle > 0 then
+ if disc.angle >= 0 then
   local discidx = sprite_idx(disc, 1, 2)
   spr((disc.spr + discidx), disc.x, disc.y)
  end
 end
 
+function move(plr)
+ local ctrlmask = 0x00FF * (100 ^ plr.num)
+ if(band(btn(), ctrlmask) == 0) idle(plr)
+
+ if(btn(⬅️, plr.num)) move_left(plr)
+ if(btn(➡️, plr.num)) move_right(plr)
+ if(btn(⬆️, plr.num)) move_up(plr)
+ if(btn(⬇️, plr.num)) move_down(plr)
+ if(btnp(❎, plr.num)) action(plr, btn())
+end
+
 function fly(obj)
- obj.x += obj.speed
- obj.tick += 1
+ obj.x = obj.x + obj.speed * cos(obj.angle)
+ obj.y = obj.y + obj.speed * sin(obj.angle)
+
+ if catch(obj.x, obj.y) then
+  obj.tick = 0
+  obj.angle = -1
+ else
+  obj.tick += 1
+ end
 end
 
 function idle(plr)
@@ -110,9 +118,14 @@ function sprite_idx(obj, frames, speed)
 end
 
 function action(plr)
+ if(plr.west) disc.angle = 0.5 else disc.angle = 0.0
+ local orientation = plr.west and -1 or 1
+ if(btn(⬆️, plr.num)) disc.angle = disc.angle + (0.125 * orientation)
+ if(btn(⬇️, plr.num)) disc.angle = disc.angle - (0.125 * orientation)
+ if(disc.angle < 0) disc.angle += 1
+
  disc.x = plr.x
  disc.y = plr.y
- disc.angle = 90
  sfx(0)
 end
 
@@ -121,6 +134,13 @@ function collision(x, y)
  local coly = y / 8
  local cell = mget(colx, coly)
  return fget(cell, 0)
+end
+
+function catch(x, y)
+ local colx = x / 8
+ local coly = y / 8
+ local cell = mget(colx, coly)
+ return fget(cell, 1)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
