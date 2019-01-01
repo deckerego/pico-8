@@ -139,7 +139,7 @@ end
 function catch(x, y)
  local colx = x / 8
  local coly = y / 8
- local cell = mget(colx, coly)
+ local cell = sget(colx, coly)
  return fget(cell, 1)
 end
 __gfx__
