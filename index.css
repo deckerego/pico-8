@@ -1,32 +1,32 @@
 canvas#canvas { width: 512px; height: 512px; }
 
-.console{
-  width: 512px;
-  height: 100%;
+.console {
+  height: 90%;
+  padding: 10px;
   background-color: gainsboro;
 }
 
-.screen{
+.screen {
+  width: 512px;
+  margin: auto;
   background-color: black;
   clear: both;
 }
 
-.gap{
+.gap {
   background-color: gray;
   height: 20px;
   clear: both;
 }
 
-.controller{
+.controller {
   display: grid;
   grid-template-columns: auto auto auto auto;
   grid-gap: 10px;
-  position: fixed;
-  width: inherit;
-  bottom: 20px;
+  height: 50%;
 }
 
-.switch{
+.switch {
   background-color: silver;
   color: black;
   text-align: center;
@@ -37,7 +37,7 @@ canvas#canvas { width: 512px; height: 512px; }
   overflow: hidden;
 }
 
-.dpad{
+.dpad {
   background-color: gray;
   color: black;
   text-align: center;
@@ -49,15 +49,15 @@ canvas#canvas { width: 512px; height: 512px; }
   display: inline-grid;
 }
 
-.dpad-vert{
+.dpad-vert {
   padding: 15px 4px;
 }
 
-.dpad-horiz{
+.dpad-horiz {
   padding: 1px 15px;
 }
 
-.button{
+.button {
   background-color: red;
   color: white;
   padding: 20px 10px;
@@ -68,7 +68,7 @@ canvas#canvas { width: 512px; height: 512px; }
   border-radius: 50%;
 }
 
-canvas{
+canvas {
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
