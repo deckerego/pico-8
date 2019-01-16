@@ -6,7 +6,7 @@ function _init()
  p1.num = 0
  p1.speed = 1.25
  p1.x = 28
- p1.y = 32
+ p1.y = 36
  p1.spr = 0
  p1.tick = 0
  p1.west = false
@@ -15,8 +15,8 @@ function _init()
  p2 = {}
  p2.num = 1
  p2.speed = 1.25
- p2.x = 82
- p2.y = 32
+ p2.x = 94
+ p2.y = 36
  p2.spr = 16
  p2.tick = 0
  p2.west = true
@@ -43,17 +43,17 @@ function _draw()
  map(0, 0)
 
  local p1idx = sprite_idx(p1, 4, 3)
- spr((p1.spr + p1idx) * 2, p1.x - 8, p1.y, 2, 2, p1.west, false)
+ spr((p1.spr + p1idx) * 2, p1.x - 8, p1.y - 8, 2, 2, p1.west, false)
 
  local p2idx = sprite_idx(p2, 4, 3)
- spr((p2.spr + p2idx) * 2, p2.x + 8, p2.y, 2, 2, p2.west, false)
+ spr((p2.spr + p2idx) * 2, p2.x - 8, p2.y - 8, 2, 2, p2.west, false)
 
  if disc.angle >= 0 then
   local discidx = sprite_idx(disc, 1, 2)
-  spr((disc.spr + discidx), disc.x, disc.y)
+  spr((disc.spr + discidx), disc.x - 4, disc.y - 4)
  end
 
- print(band(btn(), 0x00FF * (0x100 ^ p2.num)))
+ print(disc.y)
 end
 
 function move(plr)
@@ -71,9 +71,11 @@ function fly(obj)
  obj.x = obj.x + obj.speed * cos(obj.angle)
  obj.y = obj.y + obj.speed * sin(obj.angle)
 
- if catch(obj.x, obj.y) then
+ local catcher = catch(obj.x, obj.y)
+ if catcher then
   obj.tick = 0
   obj.angle = -1
+  catcher.disc = true
  else
   obj.tick += 1
  end
@@ -131,9 +133,9 @@ function action(plr)
   if(disc.angle < 0) disc.angle += 1
 
   sfx(0)
-  disc.x = plr.x
-  disc.y = plr.y
-  //plr.disc = false
+  disc.x = plr.x + (8 * orientation)
+  disc.y = plr.y - 2
+  plr.disc = false
  end
 end
 
@@ -145,7 +147,9 @@ function collision(x, y)
 end
 
 function catch(x, y)
- return x >= p2.x - 4 and x <= p2.x + 4 and y >= p2.y - 4 and y <= p2.y + 4
+ if(x >= p1.x - 4 and x <= p1.x + 4 and y >= p1.y - 4 and y <= p1.y + 4) return p1
+ if(x >= p2.x - 4 and x <= p2.x + 4 and y >= p2.y - 4 and y <= p2.y + 4) return p2
+ return false
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
