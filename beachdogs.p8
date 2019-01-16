@@ -10,6 +10,7 @@ function _init()
  p1.spr = 0
  p1.tick = 0
  p1.west = false
+ p1.disc = true
 
  p2 = {}
  p2.num = 1
@@ -19,6 +20,7 @@ function _init()
  p2.spr = 16
  p2.tick = 0
  p2.west = true
+ p2.disc = false
 
  disc = {}
  disc.angle = -1
@@ -50,6 +52,10 @@ function _draw()
   local discidx = sprite_idx(disc, 1, 2)
   spr((disc.spr + discidx), disc.x, disc.y)
  end
+
+ local colx = disc.x / 8
+ local coly = disc.y / 8
+ print(mget(colx, coly))
 end
 
 function move(plr)
@@ -118,15 +124,18 @@ function sprite_idx(obj, frames, speed)
 end
 
 function action(plr)
- if(plr.west) disc.angle = 0.5 else disc.angle = 0.0
- local orientation = plr.west and -1 or 1
- if(btn(⬆️, plr.num)) disc.angle = disc.angle + (0.125 * orientation)
- if(btn(⬇️, plr.num)) disc.angle = disc.angle - (0.125 * orientation)
- if(disc.angle < 0) disc.angle += 1
+ if plr.disc then
+  if(plr.west) disc.angle = 0.5 else disc.angle = 0.0
+  local orientation = plr.west and -1 or 1
+  if(btn(⬆️, plr.num)) disc.angle = disc.angle + (0.125 * orientation)
+  if(btn(⬇️, plr.num)) disc.angle = disc.angle - (0.125 * orientation)
+  if(disc.angle < 0) disc.angle += 1
 
- disc.x = plr.x
- disc.y = plr.y
- sfx(0)
+  sfx(0)
+  disc.x = plr.x
+  disc.y = plr.y
+  plr.disc = false
+ end
 end
 
 function collision(x, y)
@@ -139,7 +148,7 @@ end
 function catch(x, y)
  local colx = x / 8
  local coly = y / 8
- local cell = sget(colx, coly)
+ local cell = mget(colx, coly)
  return fget(cell, 1)
 end
 __gfx__
