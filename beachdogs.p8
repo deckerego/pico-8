@@ -5,7 +5,7 @@ function _init()
  p1 = {}
  p1.num = 0
  p1.speed = 1.25
- p1.x = 24
+ p1.x = 28
  p1.y = 32
  p1.spr = 0
  p1.tick = 0
@@ -43,23 +43,21 @@ function _draw()
  map(0, 0)
 
  local p1idx = sprite_idx(p1, 4, 3)
- spr((p1.spr + p1idx) * 2, p1.x, p1.y, 2, 2, p1.west, false)
+ spr((p1.spr + p1idx) * 2, p1.x - 8, p1.y, 2, 2, p1.west, false)
 
  local p2idx = sprite_idx(p2, 4, 3)
- spr((p2.spr + p2idx) * 2, p2.x, p2.y, 2, 2, p2.west, false)
+ spr((p2.spr + p2idx) * 2, p2.x + 8, p2.y, 2, 2, p2.west, false)
 
  if disc.angle >= 0 then
   local discidx = sprite_idx(disc, 1, 2)
   spr((disc.spr + discidx), disc.x, disc.y)
  end
 
- local colx = disc.x / 8
- local coly = disc.y / 8
- print(mget(colx, coly))
+ print(band(btn(), 0x00FF * (0x100 ^ p2.num)))
 end
 
 function move(plr)
- local ctrlmask = 0x00FF * (100 ^ plr.num)
+ local ctrlmask = 0x00FF * (0x100 ^ plr.num)
  if(band(btn(), ctrlmask) == 0) idle(plr)
 
  if(btn(⬅️, plr.num)) move_left(plr)
@@ -125,8 +123,9 @@ end
 
 function action(plr)
  if plr.disc then
-  if(plr.west) disc.angle = 0.5 else disc.angle = 0.0
   local orientation = plr.west and -1 or 1
+
+  if(plr.west) disc.angle = 0.5 else disc.angle = 0.0
   if(btn(⬆️, plr.num)) disc.angle = disc.angle + (0.125 * orientation)
   if(btn(⬇️, plr.num)) disc.angle = disc.angle - (0.125 * orientation)
   if(disc.angle < 0) disc.angle += 1
@@ -134,7 +133,7 @@ function action(plr)
   sfx(0)
   disc.x = plr.x
   disc.y = plr.y
-  plr.disc = false
+  //plr.disc = false
  end
 end
 
@@ -146,10 +145,7 @@ function collision(x, y)
 end
 
 function catch(x, y)
- local colx = x / 8
- local coly = y / 8
- local cell = mget(colx, coly)
- return fget(cell, 1)
+ return x >= p2.x - 4 and x <= p2.x + 4 and y >= p2.y - 4 and y <= p2.y + 4
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
