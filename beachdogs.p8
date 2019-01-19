@@ -52,8 +52,6 @@ function _draw()
   local discidx = sprite_idx(disc, 1, 2)
   spr((disc.spr + discidx), disc.x - 4, disc.y - 4)
  end
-
- print(disc.angle)
 end
 
 function move(plr)
@@ -77,11 +75,12 @@ function fly(obj)
  end
 
  if bounce(obj.x, obj.y) then
-  obj.angle = 360 - obj.angle
+  obj.angle = 1 - obj.angle
  end
 
  if goal(obj.x, obj.y) then
-  p1.disc = true
+  obj.angle = 0.5 - obj.angle
+  if(obj.angle < 0) obj.angle += 1
  end
 
  obj.tick += 1
